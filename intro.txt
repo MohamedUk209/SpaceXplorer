@@ -1,0 +1,13 @@
+==============================
+WELCOME TO SPACEXPLORER
+==============================
+You are a lone astronaut.
+Your mission is to clean space junk
+and return home safely.
+
+Each step consumes fuel.
+Avoid the asteroid.
+Collect junk to survive.
+
+Good luck, SpaceXplorer!
+==============================

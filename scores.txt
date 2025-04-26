@@ -1,0 +1,64 @@
+Date: 24-04-2025 20:26:53
+Player: Kareem
+Difficulty: Hard
+Score: 0
+Final Fuel: 12
+Final Health: 10
+Final Position: (17, 9)
+---
+Date: 24-04-2025 21:00:06
+Player: Lkaksks
+Difficulty: Medium
+Score: 1
+Final Fuel: 19
+Final Health: 0
+Final Position: (16, 6)
+---
+Date: 24-04-2025 21:00:47
+Player: Lobby
+Difficulty: Hard
+Score: 1
+Final Fuel: 0
+Final Health: 5
+Final Position: (12, 17)
+---
+Date: 25-04-2025 16:47:13
+Player: Kasim
+Difficulty: Medium
+Score: 0
+Final Fuel: 21
+Final Health: 10
+Final Position: (17, 8)
+---
+Date: 25-04-2025 17:15:41
+Player: hans
+Difficulty: Medium
+Score: 0
+Final Fuel: 22
+Final Health: 10
+Final Position: (17, 9)
+---
+Date: 25-04-2025 17:16:52
+Player: Jack
+Difficulty: Medium
+Score: 0
+Final Fuel: 22
+Final Health: 10
+Final Position: (17, 9)
+---
+Date: 25-04-2025 19:29:16
+Player: Kasy
+Difficulty: Medium
+Score: 1
+Final Fuel: 0
+Final Health: 10
+Final Position: (9, 16)
+---
+Date: 25-04-2025 22:43:15
+Player: karl
+Difficulty: Medium
+Score: 0
+Final Fuel: 22
+Final Health: 10
+Final Position: (17, 9)
+---
