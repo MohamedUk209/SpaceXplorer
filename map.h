@@ -6,6 +6,6 @@
 #include "game.h"  // We need access to Player, Asteroid, and Junk structures
 
 // This function shows the full 18x18 map with all game objects
-void display_map(Player player, Asteroid asteroid, Alien alien, Junk junk[], int junk_count);
+void display_map(Player player, Asteroid asteroid);
 
 #endif
