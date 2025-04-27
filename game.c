@@ -18,3 +18,4 @@ void setup_game(Player* player, Asteroid* asteroid) {
     asteroid->x = MAP_SIZE - 1;
     asteroid->y = MAP_SIZE - 1;
 }
+
