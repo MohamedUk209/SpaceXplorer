@@ -6,6 +6,8 @@
 int main() {
     Player player;
     Asteroid asteroid;
+    Junk junk[MAX_JUNK];
+    Alien alien;
 
     // Ask for player's name
     char player_name[50];
@@ -18,7 +20,7 @@ int main() {
     setup_game(&player, &asteroid);
 
     // Display the space map and current location
-    display_map(player, asteroid);
+    display_map(player, asteroid, alien, junk, MAX_JUNK);
 
     printf("\nThank you for playing, %s!\n", player_name);
 

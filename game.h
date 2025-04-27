@@ -5,6 +5,7 @@
 #define GAME_H
 
 #define MAP_SIZE 18      // The minimum size of the space grid
+#define MAX_JUNK 10      // Number of junk pieces to place in space
 
 // This structure keeps track of the player (you, the astronaut)
 typedef struct {
