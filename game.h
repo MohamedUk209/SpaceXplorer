@@ -35,6 +35,26 @@ typedef struct {
 } Alien;
 
 // Sets up the initial state of the game
-void setup_game(Player* player, Asteroid* asteroid);
+void setup_game(Player* player, Asteroid* asteroid, Alien* alien, Junk junk[], int junk_count, int fuel);
+
+void move_alien(Alien* alien);
+
+// Moves the player based on input character (W, A, S, D)
+int move_player(Player* player, char direction);
+
+// Moves the asteroid one step on its fixed path
+void move_asteroid(Asteroid* asteroid);
+
+// Reduces the player's fuel each turn
+void reduce_fuel(Player* player);
+
+// Checks if player collects junk at their current position
+void collect_junk(Player* player, Junk junk[], int junk_count);
+
+// Returns 1 (true) if player hits the asteroid
+int check_collision(Player player, Asteroid asteroid);
+
+// Returns 1 (true) if player has won the game (e.g., collected enough junk)
+int check_win(Player player);
 
 #endif
