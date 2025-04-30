@@ -1,4 +1,4 @@
-# 🌌 SpaceXplorer
+# SpaceXplorer
 
 **Version:** 1.0 
 **Author:** Mohamed  
@@ -36,7 +36,7 @@
 
 ---
 
-## 🛠 How to Compile
+## How to Compile
 
 ```bash
 gcc -o game main.c map.c game.c fileio.c
