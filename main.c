@@ -47,10 +47,11 @@ int main() {
     setup_game(&player, &asteroid, &alien, junk, MAX_JUNK, 30);
 
     int turn = 0;  // To control alien movement every 2 turns
-
+    // Game loop starts
     while (1) {
-         // Display the space map and current location
-         display_map(player, asteroid, alien, junk, MAX_JUNK);
+        // Display the space map and current location
+        display_map(player, asteroid, alien, junk, MAX_JUNK);
+        printf("Player location: (%d, %d) | Fuel: %d | Health: %d\n", player.x, player.y, player.fuel, player.health);
 
         // Ask for movement input
         char move;
@@ -91,7 +92,16 @@ int main() {
          reduce_fuel(&player);
          collect_junk(&player, junk, MAX_JUNK);
  
- 
+        // Check collision with alien
+        if (player.x == alien.x && player.y == alien.y) {
+            player.health -= 5;
+            printf("An alien attacked you! -5 health!\n");
+            if (player.health <= 0) {
+                printf("Game Over! You were killed by an alien.\n"); fflush(stdout);
+                break;
+            }
+        }
+
          // Check collision with asteroid
          if (check_collision(player, asteroid)) {
              printf("Game Over! You collided with the asteroid!\n"); fflush(stdout);
@@ -103,6 +113,11 @@ int main() {
              printf("Game Over! You ran out of fuel.\n"); fflush(stdout);
              break;
          }
+        // Check health exhaustion
+        if (player.health <= 0) {
+            printf("Game Over! Your ship has been destroyed (health = 0).\n"); fflush(stdout);
+            break;
+        }
 
         // Move alien every 2 turns
         if (turn % 2 == 0) {
