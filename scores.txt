@@ -1,0 +1,8 @@
+Date: 30-04-2025 04:33:36
+Player: James
+Difficulty: Medium
+Score: 1
+Final Fuel: 21
+Final Health: 10
+Final Position: (17, 3)
+---
