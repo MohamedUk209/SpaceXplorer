@@ -38,7 +38,6 @@
 
 ## How to Compile
 
-```bash
 gcc -o game main.c map.c game.c fileio.c
 
 
