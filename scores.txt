@@ -6,3 +6,51 @@ Final Fuel: 21
 Final Health: 10
 Final Position: (17, 3)
 ---
+Date: 30-04-2025 05:01:50
+Player: ali
+Difficulty: Medium
+Score: 2
+Final Fuel: 5
+Final Health: 10
+Final Position: (17, 0)
+---
+Date: 30-04-2025 14:08:34
+Player: Tester
+Difficulty: Medium
+Score: 0
+Final Fuel: 20
+Final Health: 10
+Final Position: (17, 7)
+---
+Date: 30-04-2025 14:09:27
+Player: Tester
+Difficulty: Medium
+Score: 0
+Final Fuel: 20
+Final Health: 10
+Final Position: (17, 7)
+---
+Date: 30-04-2025 14:10:18
+Player: Tester
+Difficulty: Medium
+Score: 0
+Final Fuel: 20
+Final Health: 10
+Final Position: (17, 7)
+---
+Date: 30-04-2025 14:10:50
+Player: Tester
+Difficulty: Medium
+Score: 0
+Final Fuel: 20
+Final Health: 10
+Final Position: (17, 7)
+---
+Date: 30-04-2025 14:32:27
+Player: Tester
+Difficulty: Medium
+Score: 0
+Final Fuel: 20
+Final Health: 10
+Final Position: (17, 7)
+---

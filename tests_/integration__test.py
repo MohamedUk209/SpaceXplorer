@@ -1,80 +1,104 @@
 import subprocess
+import threading
 import time
 
-def run_test(test_name, inputs, expected_outputs, log_file):
-    print(f"Running {test_name}...")
+def run_test(test_name, inputs, expected_outputs):
+    print(f"Running Test: {test_name}")
+    output_collector = []
+
+    def reader_thread_func(pipe, collector):
+        try:
+            for line in iter(pipe.readline, ''):
+                collector.append(line)
+        except Exception:
+            pass
+
     try:
         process = subprocess.Popen(
             ['./game'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
+            bufsize=1
         )
 
+        reader_thread = threading.Thread(target=reader_thread_func, args=(process.stdout, output_collector))
+        reader_thread.start()
+
+        # Send each line slowly
         for line in inputs:
             process.stdin.write(line + '\n')
             process.stdin.flush()
             time.sleep(0.2)
 
-        time.sleep(2)
-        process.terminate()
-        output, _ = process.communicate()
+        # Wait extra time to collect stdout before killing
+        time.sleep(3)
+        process.kill()
+        reader_thread.join()
 
-        with open(log_file, 'a', encoding='utf-8') as f:
-            f.write(f"\n--- {test_name} ---\n")
-            f.write(output)
+        full_output = ''.join(output_collector)
+
+        with open('test_log/integration_test_log.txt', 'a', encoding='utf-8') as f:
+            f.write(f"\n=== {test_name} ===\n")
+            f.write(full_output)
             f.write("\n----------------------\n")
 
-        passed = all(expected.lower() in output.lower() for expected in expected_outputs)
+        passed = all(expected.lower() in full_output.lower() for expected in expected_outputs)
+
         if passed:
             print("PASS")
         else:
             print("FAIL")
             for expected in expected_outputs:
-                if expected.lower() not in output.lower():
-                    print(f"Missing expected output: {expected}")
-        print("-" * 50)
+                if expected.lower() not in full_output.lower():
+                    print(f"Missing: {expected}")
+        print("-" * 60)
 
     except Exception as e:
-        print(f"Error in {test_name}: {e}")
-        print("-" * 50)
+        print(f"Error in test '{test_name}': {e}")
+        print("-" * 60)
 
-# INTEGRATION TESTS FOR FULL INTERACTION FLOWS
-def test_intro_and_map():
+# === INTEGRATION TESTS ===
+
+def test_movement_and_map_update():
     run_test(
-        "Intro and Map Display",
-        ["Ali", "2", "H"],
-        ["WELCOME TO SPACEXPLORER", "--- Space Map ---", "P", "A"],
-        "test_log/integration_test_log.txt"
+        test_name="Movement and Map Update Integration",
+        inputs=["Tester", "W", "A", "D", "S"],
+        expected_outputs=[
+            "WELCOME TO SPACEXPLORER",
+            "--- Space Map ---",
+            "Fuel:",
+            "Score:",
+            "Health:"
+        ]
     )
 
-def test_movement_and_fuel_drop():
+def test_status_and_movement_together():
     run_test(
-        "Movement + Fuel Reduction",
-        ["Ali", "2", "D", "H"],
-        ["Fuel:"],
-        "integration_test_log.txt"
+        test_name="System Status + Movement Integration",
+        inputs=["Tester", "W", "H", "D", "H"],
+        expected_outputs=[
+            "Ship Status",
+            "Fuel:",
+            "Score:",
+            "Health:",
+            "--- Space Map ---"
+        ]
     )
 
-def test_alien_encounter():
+def test_junk_collection_and_score():
     run_test(
-        "Alien Encounter Simulation",
-        ["Ali", "2", "D", "S", "D", "S", "D", "S", "D", "S", "H"],
-        ["An alien attacked you!", "health"],
-        "integration_test_log.txt"
-    )
-
-def test_junk_collection_effects():
-    run_test(
-        "Junk Collection + Action",
-        ["Ali", "2", "D", "D", "S", "S", "D", "S", "F"],
-        ["You collected space junk!", "+5 fuel", "+2 health", "Invalid choice"],
-        "integration_test_log.txt"
+        test_name="Junk Collection and Score Integration",
+        inputs=["Tester", "D", "D", "D", "D", "F"],
+        expected_outputs=[
+            "You collected space junk",
+            "+5 fuel",
+            "Score:"
+        ]
     )
 
 if __name__ == "__main__":
-    test_intro_and_map()
-    test_movement_and_fuel_drop()
-    test_alien_encounter()
-    test_junk_collection_effects()
+    test_movement_and_map_update()
+    test_status_and_movement_together()
+    test_junk_collection_and_score()

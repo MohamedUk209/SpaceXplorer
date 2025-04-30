@@ -1,9 +1,13 @@
 import subprocess
-import time
 
-def run_scenario(name, steps, expected_outputs):
-    print(f"Running Scenario: {name}")
+def run_test(test_name, inputs, expected_outputs):
+    print(f"Running Test: {test_name}")
+    
     try:
+        # Combine all input into a single string with newlines
+        input_str = '\n'.join(inputs) + '\n'
+
+        # Launch the game and send all input at once
         process = subprocess.Popen(
             ['./game'],
             stdin=subprocess.PIPE,
@@ -11,35 +15,61 @@ def run_scenario(name, steps, expected_outputs):
             stderr=subprocess.PIPE,
             text=True
         )
-        for s in steps:
-            process.stdin.write(s + '\n')
-            process.stdin.flush()
-            time.sleep(0.3)
-        time.sleep(2)
-        process.terminate()
-        output, _ = process.communicate()
 
+        # Send all input, wait up to 10 seconds
+        output, _ = process.communicate(input=input_str, timeout=10)
+
+        # Save output to log
         with open('test_log/scenario_test_log.txt', 'a', encoding='utf-8') as f:
-            f.write(f"\n=== Scenario: {name} ===\n")
+            f.write(f"\n=== {test_name} ===\n")
             f.write(output)
             f.write("\n----------------------\n")
 
-        passed = all(exp.lower() in output.lower() for exp in expected_outputs)
-        print("PASS" if passed else "FAIL")
-        if not passed:
-            for exp in expected_outputs:
-                if exp.lower() not in output.lower():
-                    print(f"Missing: {exp}")
+        # Check expected outputs
+        passed = all(expected.lower() in output.lower() for expected in expected_outputs)
+
+        if passed:
+            print("PASS")
+        else:
+            print("FAIL")
+            for expected in expected_outputs:
+                if expected.lower() not in output.lower():
+                    print(f"Missing: {expected}")
+        print("-" * 60)
+
+    except subprocess.TimeoutExpired:
+        process.kill()
+        print(f"FAIL: {test_name} - Timed out")
         print("-" * 60)
     except Exception as e:
-        print(f"Scenario failed: {e}")
+        print(f"Error in test '{test_name}': {e}")
+        print("-" * 60)
 
-def full_journey():
-    run_scenario(
-        "Full Gameplay Scenario",
-        ["PlayerOne", "2", "D", "S", "H", "A", "W", "H"],
-        ["WELCOME TO SPACEXPLORER", "--- Space Map ---", "Fuel:", "Score:", "Health:"]
+# === SCENARIO TEST ===
+
+def full_gameplay_scenario():
+    run_test(
+        test_name="Full Gameplay Scenario (Movement, Status, Junk, Collision)",
+        inputs=[
+            "Tester",
+            "W", "W", "D", "D",
+            "H",
+            "D", "D", "D", "D",
+            "F",
+            "D", "D", "D", "D"
+        ],
+        expected_outputs=[
+            "WELCOME TO SPACEXPLORER",
+            "Ship Status",
+            "Fuel:",
+            "Score:",
+            "Health:",
+            "You collected space junk!",
+            "You gained +5 fuel!",
+            "Game Over",
+            "collided with the asteroid"
+        ]
     )
 
 if __name__ == "__main__":
-    full_journey()
+    full_gameplay_scenario()
