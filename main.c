@@ -4,6 +4,7 @@
 #include "fileio.h"
 
 int main() {
+    // Declare player, asteroid, junk array
     Player player;
     Asteroid asteroid;
     Junk junk[MAX_JUNK];
@@ -43,30 +44,36 @@ int main() {
         printf("You chose MEDIUM mode. Fuel: 30, Score to win: 5\n");
     }
 
-    // Setup game with default fuel value (to be updated with difficulty later)
-    setup_game(&player, &asteroid, &alien, junk, MAX_JUNK, 30);
+    // Setup game with selected fuel level
+    setup_game(&player, &asteroid, &alien, junk, MAX_JUNK, starting_fuel);
 
-    int turn = 0;  // To control alien movement every 2 turns
+    int turn = 0;  // Tracks turns to move alien every other round
     // Game loop starts
     while (1) {
         // Display the space map and current location
         display_map(player, asteroid, alien, junk, MAX_JUNK);
-        printf("Player location: (%d, %d) | Fuel: %d | Health: %d\n", player.x, player.y, player.fuel, player.health);
+        // printf("Player location: (%d, %d) | Fuel: %d | Health: %d\n", player.x, player.y, player.fuel, player.health);
 
         // Ask for movement input
         char move;
         printf("Enter move (W = up, A = left, S = down, D = right): ");
         printf("\nCheck System (H) ");
-        scanf(" %c", &move);
+        scanf(" %c", &move);  // Leading space ignores leftover newline
 
-        // Check if user wants system status
         if (move == 'H' || move == 'h') {
             // Print health/fuel/score status on demand
-            printf("\n--- Ship Status ---\n");
+            printf("\n--- Ship Status ---\n"); fflush(stdout);
             printf("Location: (%d, %d)\n", player.x, player.y);
             printf("Fuel: %d\n", player.fuel);
             printf("Health: %d\n", player.health);
             printf("Score: %d\n", player.score);
+        
+            // count junk collected
+            int collected = 0;
+            for (int i = 0; i < MAX_JUNK; i++) {
+                if (junk[i].collected) collected++;
+            }
+            printf("Junk Collected: %d/%d\n", collected, MAX_JUNK); fflush(stdout);
             printf("--------------------\n\n");
             continue;  // Skip the rest of the loop
         }
@@ -76,7 +83,7 @@ int main() {
             move != 'A' && move != 'a' &&
             move != 'S' && move != 's' &&
             move != 'D' && move != 'd') {
-            printf("Invalid input! Use W, A, S, or D.\n");
+            printf("Invalid input! Use W, A, S, or D.\n"); fflush(stdout);
             continue;
         }
 
@@ -85,13 +92,13 @@ int main() {
             printf("You hit the boundary! No movement made.\n");  fflush(stdout);
             continue;  // Skip update logic
         }
+        
 
+        // Movement was valid — apply game updates
+        move_asteroid(&asteroid);
+        reduce_fuel(&player);
+        collect_junk(&player, junk, MAX_JUNK);
 
-         // Movement was valid — apply game updates
-         move_asteroid(&asteroid);
-         reduce_fuel(&player);
-         collect_junk(&player, junk, MAX_JUNK);
- 
         // Check collision with alien
         if (player.x == alien.x && player.y == alien.y) {
             player.health -= 5;
@@ -102,20 +109,27 @@ int main() {
             }
         }
 
-         // Check collision with asteroid
-         if (check_collision(player, asteroid)) {
-             printf("Game Over! You collided with the asteroid!\n"); fflush(stdout);
-             break;
-         }
- 
-         // Check fuel exhaustion
-         if (player.fuel <= 0) {
-             printf("Game Over! You ran out of fuel.\n"); fflush(stdout);
-             break;
-         }
+        // Check collision with asteroid
+        if (check_collision(player, asteroid)) {
+            printf("Game Over! You collided with the asteroid!\n"); fflush(stdout);
+            break;
+        }
+
+        // Check fuel exhaustion
+        if (player.fuel <= 0) {
+            printf("Game Over! You ran out of fuel.\n"); fflush(stdout);
+            break;
+        }
         // Check health exhaustion
         if (player.health <= 0) {
             printf("Game Over! Your ship has been destroyed (health = 0).\n"); fflush(stdout);
+            break;
+        }
+
+        // Check win condition
+        if (player.score >= win_score) {
+            printf("You win! You've collected enough space junk!\n"); fflush(stdout);
+            printf("Final Fuel: %d | Final Health: %d\n", player.fuel, player.health);
             break;
         }
 
@@ -123,10 +137,10 @@ int main() {
         if (turn % 2 == 0) {
             move_alien(&alien);
         }
-
         turn++;
+
     }
-    
+
     // Save score after game ends
     save_score_to_file("scores.txt", player_name, player.score, difficulty_label, player.fuel, player.health, player.x, player.y);
 

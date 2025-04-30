@@ -40,5 +40,5 @@ void display_map(Player player, Asteroid asteroid, Alien alien, Junk junk[], int
     }
 
     // Print player status
-    printf("Fuel: %d   Score: %d   Health: %d\n", player.fuel, player.score, player.health);
+    printf("Fuel: %d   Score: %d   Health: %d\n", player.fuel, player.score, player.health);fflush(stdout);
 }
