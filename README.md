@@ -41,15 +41,12 @@
 ```bash
 gcc -o game main.c map.c game.c fileio.c
 
-```bash
-
-
 
 ---
 
-## Run
+## How to Run
 
 ```bash
 ./game
 
-```bash
+
