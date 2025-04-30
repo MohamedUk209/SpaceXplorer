@@ -1,0 +1,24 @@
+
+=== Intro and Map Display Test ===
+
+-----------------------------
+
+=== Invalid Input Handling Test ===
+
+-----------------------------
+
+=== System Status Check ===
+
+-----------------------------
+
+=== Boundary Block Test ===
+
+-----------------------------
+
+=== Alien Encounter Simulation ===
+
+-----------------------------
+
+--- Intro and Map Display ---
+
+----------------------

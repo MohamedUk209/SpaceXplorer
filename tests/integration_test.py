@@ -1,37 +1,31 @@
 import subprocess
 import time
 
-# Function to run the integration test
-def run_integration_test(test_name, inputs, expected_outputs):
-    print(f"Running Integration Test: {test_name}")
+def run_test(test_name, inputs, expected_outputs, log_file):
+    print(f"Running {test_name}...")
     try:
-        # Start game.exe
         process = subprocess.Popen(
-            [r'C:\Users\omarm\OneDrive\Desktop\Eva - Mini C Game\Game\SpaceXplorer\game.exe'],
+            ['./game'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
 
-        # Feed the input step-by-step
         for line in inputs:
             process.stdin.write(line + '\n')
             process.stdin.flush()
-            time.sleep(0.5)  # Allow some time for game to respond
+            time.sleep(0.2)
 
-        # Give some time then close
         time.sleep(2)
         process.terminate()
+        output, _ = process.communicate()
 
-        # Collect output
-        output, error = process.communicate(timeout=5)
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(f"\n--- {test_name} ---\n")
+            f.write(output)
+            f.write("\n----------------------\n")
 
-        # Save to a log file for evidence
-        with open("scenario_test_log.txt", "a", encoding="utf-8") as f:
-            f.write(f"--- Integration Test: {test_name} ---\n{output}\n")
-
-        # Validate expected output
         passed = all(expected.lower() in output.lower() for expected in expected_outputs)
         if passed:
             print("PASS")
@@ -40,26 +34,47 @@ def run_integration_test(test_name, inputs, expected_outputs):
             for expected in expected_outputs:
                 if expected.lower() not in output.lower():
                     print(f"Missing expected output: {expected}")
-        print("-" * 60)
+        print("-" * 50)
 
     except Exception as e:
-        print(f"Integration Test '{test_name}' failed due to exception: {e}")
-        print("-" * 60)
+        print(f"Error in {test_name}: {e}")
+        print("-" * 50)
 
-# Now define tests matching what your real program does now
-
-def test_intro_and_map_display():
-    run_integration_test(
-        "Intro and Map Display Test",
-        ["James"],  # Only name input needed
-        [
-            "WELCOME TO SPACEXPLORER",  # Check intro appeared
-            "--- Space Map ---",         # Check map printed
-            "P",                         # Check player placed
-            "A"                          # Check asteroid placed
-        ]
+# INTEGRATION TESTS FOR FULL INTERACTION FLOWS
+def test_intro_and_map():
+    run_test(
+        "Intro and Map Display",
+        ["Ali", "2", "H"],
+        ["WELCOME TO SPACEXPLORER", "--- Space Map ---", "P", "A"],
+        "test_log/integration_test_log.txt"
     )
 
-# Run the integration tests
+def test_movement_and_fuel_drop():
+    run_test(
+        "Movement + Fuel Reduction",
+        ["Ali", "2", "D", "H"],
+        ["Fuel:"],
+        "integration_test_log.txt"
+    )
+
+def test_alien_encounter():
+    run_test(
+        "Alien Encounter Simulation",
+        ["Ali", "2", "D", "S", "D", "S", "D", "S", "D", "S", "H"],
+        ["An alien attacked you!", "health"],
+        "integration_test_log.txt"
+    )
+
+def test_junk_collection_effects():
+    run_test(
+        "Junk Collection + Action",
+        ["Ali", "2", "D", "D", "S", "S", "D", "S", "F"],
+        ["You collected space junk!", "+5 fuel", "+2 health", "Invalid choice"],
+        "integration_test_log.txt"
+    )
+
 if __name__ == "__main__":
-    test_intro_and_map_display()
+    test_intro_and_map()
+    test_movement_and_fuel_drop()
+    test_alien_encounter()
+    test_junk_collection_effects()

@@ -1,0 +1,40 @@
+
+=== Intro Display ===
+
+----------------------
+
+=== Invalid Key Handling ===
+
+----------------------
+
+=== System Check ===
+
+----------------------
+
+=== Boundary Check ===
+
+----------------------
+
+=== Alien Encounter (random simulation) ===
+
+----------------------
+
+=== Intro Display ===
+
+----------------------
+
+=== Invalid Key Handling ===
+
+----------------------
+
+=== System Check ===
+
+----------------------
+
+=== Boundary Check ===
+
+----------------------
+
+=== Alien Encounter ===
+
+----------------------
