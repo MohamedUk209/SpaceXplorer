@@ -17,6 +17,10 @@ int main() {
     // Show the intro story from file
     read_intro_from_file("intro.txt");
 
+    // Ask user to choose difficulty
+    int difficulty = 2;  // Default: Medium
+    char* difficulty_label = "Medium";
+
     // Setup game with default fuel value (to be updated with difficulty later)
     setup_game(&player, &asteroid, &alien, junk, MAX_JUNK, 30);
 
@@ -70,6 +74,8 @@ int main() {
         turn++;
     }
     
+    // Save score after game ends
+    save_score_to_file("scores.txt", player_name, player.score, difficulty_label, player.fuel, player.health, player.x, player.y);
 
     return 0;
 }
