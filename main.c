@@ -21,6 +21,28 @@ int main() {
     int difficulty = 2;  // Default: Medium
     char* difficulty_label = "Medium";
 
+    printf("Select Difficulty:\n1. Easy\n2. Medium\n3. Hard\nYour choice: ");
+    scanf("%d", &difficulty);
+
+    // Set game parameters based on difficulty
+    int starting_fuel = 30;
+    int win_score = 5;
+
+    if (difficulty == 1) {
+        starting_fuel = 40;
+        win_score = 3;
+        difficulty_label = "Easy";
+        printf("You chose EASY mode. Fuel: 40, Score to win: 3\n");
+    } else if (difficulty == 3) {
+        starting_fuel = 20;
+        win_score = 7;
+        difficulty_label = "Hard";
+        printf("You chose HARD mode. Fuel: 20, Score to win: 7\n");
+    } else {
+        difficulty_label = "Medium";
+        printf("You chose MEDIUM mode. Fuel: 30, Score to win: 5\n");
+    }
+
     // Setup game with default fuel value (to be updated with difficulty later)
     setup_game(&player, &asteroid, &alien, junk, MAX_JUNK, 30);
 
