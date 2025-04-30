@@ -66,6 +66,25 @@ int main() {
             continue;  // Skip update logic
         }
 
+
+         // Movement was valid — apply game updates
+         move_asteroid(&asteroid);
+         reduce_fuel(&player);
+         collect_junk(&player, junk, MAX_JUNK);
+ 
+ 
+         // Check collision with asteroid
+         if (check_collision(player, asteroid)) {
+             printf("Game Over! You collided with the asteroid!\n"); fflush(stdout);
+             break;
+         }
+ 
+         // Check fuel exhaustion
+         if (player.fuel <= 0) {
+             printf("Game Over! You ran out of fuel.\n"); fflush(stdout);
+             break;
+         }
+
         // Move alien every 2 turns
         if (turn % 2 == 0) {
             move_alien(&alien);
