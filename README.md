@@ -19,7 +19,7 @@
 - Randomly moving alien that causes damage
 - Moving asteroid that ends the game on collision
 - Difficulty selection (Easy, Medium, Hard)
-- Score saving and test mode support
+- Score saving 
 
 ---
 
