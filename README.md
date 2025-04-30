@@ -41,6 +41,9 @@
 ```bash
 gcc -o game main.c map.c game.c fileio.c
 
+```bash
+
+
 
 ---
 
@@ -49,3 +52,4 @@ gcc -o game main.c map.c game.c fileio.c
 ```bash
 ./game
 
+```bash
