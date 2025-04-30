@@ -48,9 +48,6 @@ int main() {
 
     int turn = 0;  // To control alien movement every 2 turns
 
-    // Display the space map and current location
-    display_map(player, asteroid, alien, junk, MAX_JUNK);
-
     while (1) {
          // Display the space map and current location
          display_map(player, asteroid, alien, junk, MAX_JUNK);
