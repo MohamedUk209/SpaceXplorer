@@ -1,17 +1,20 @@
 import subprocess
 import threading
 import time
+import os
+
+os.makedirs("test_log", exist_ok=True)
 
 def run_test(test_name, inputs, expected_outputs):
     print(f"Running Test: {test_name}")
     output_collector = []
 
     def reader_thread_func(pipe, collector):
-        while True:
-            line = pipe.readline()
-            if not line:
-                break
-            collector.append(line)
+        try:
+            for line in iter(pipe.readline, ''):
+                collector.append(line)
+        except Exception:
+            pass
 
     try:
         process = subprocess.Popen(
@@ -26,17 +29,18 @@ def run_test(test_name, inputs, expected_outputs):
         reader_thread = threading.Thread(target=reader_thread_func, args=(process.stdout, output_collector))
         reader_thread.start()
 
-        # Feed input line by line
         for line in inputs:
-            process.stdin.write(line + '\n')
-            process.stdin.flush()
-            time.sleep(0.2)  # delay helps simulate real typing
+            try:
+                process.stdin.write(line + '\n')
+                process.stdin.flush()
+                time.sleep(0.2)
+            except Exception:
+                break  # stdin likely closed, game ended
 
-        # Let it print output for a few seconds
         time.sleep(3)
         process.kill()
+        reader_thread.join()
 
-        # Combine collected output
         full_output = ''.join(output_collector)
 
         with open('test_log/unit_test_log.txt', 'a', encoding='utf-8') as f:
@@ -58,22 +62,62 @@ def run_test(test_name, inputs, expected_outputs):
         print(f"Error in test '{test_name}': {e}")
         print("-" * 60)
 
-# === Test Cases ===
+# === Unit Test Cases ===
 
-def test_intro_display():
-    run_test("Intro Display", ["Tester"], ["WELCOME TO SPACEXPLORER"])
+def test_intro_and_difficulty():
+    run_test(
+        "Intro + Difficulty Selection",
+        ["Tester", "3", "H"],
+        ["WELCOME TO SPACEXPLORER", "You chose HARD mode", "Fuel: 20", "Score to win: 7"]
+    )
 
-def test_invalid_key():
-    run_test("Invalid Input", ["Tester", "Z", "W", "W", "W"], ["Invalid input"])
+def test_status_panel():
+    run_test(
+        "System Status Panel",
+        ["Tester", "2", "H"],
+        ["Ship Status", "Fuel:", "Score:", "Health:"]
+    )
 
-def test_status_check():
-    run_test("System Status", ["Tester", "H"], ["Ship Status", "Fuel:", "Score:", "Health:"])
+def test_invalid_key_handling():
+    run_test(
+        "Invalid Key Handling",
+        ["Tester", "2", "Z"],
+        ["Invalid input"]
+    )
 
-def test_boundary_block():
-    run_test("Boundary Block", ["Tester"] + ["A"] * 10, ["You hit the boundary"])
+def test_boundary_enforcement():
+    run_test(
+        "Boundary Movement Block",
+        ["Tester", "2"] + ["A"] * 20,
+        ["You hit the boundary"]
+    )
+
+def test_alien_attack():
+    run_test(
+        "Alien Attack",
+        ["Tester", "2"] + ["W", "D"] * 6,
+        ["An alien attacked you!", "-5 health!"]
+    )
+
+def test_fuel_depletion():
+    run_test(
+        "Fuel Exhaustion",
+        ["Tester", "2"] + ["W"] * 40,
+        ["Game Over!", "You ran out of fuel."]
+    )
+
+def test_asteroid_collision():
+    run_test(
+        "Asteroid Collision",
+        ["Tester", "2"] + ["D"] * 20,
+        ["Game Over!", "You collided with the asteroid!"]
+    )
 
 if __name__ == "__main__":
-    test_intro_display()
-    test_invalid_key()
-    test_status_check()
-    test_boundary_block()
+    test_intro_and_difficulty()
+    test_status_panel()
+    test_invalid_key_handling()
+    test_boundary_enforcement()
+    test_alien_attack()
+    test_fuel_depletion()
+    test_asteroid_collision()

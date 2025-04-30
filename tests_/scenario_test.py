@@ -4,10 +4,8 @@ def run_test(test_name, inputs, expected_outputs):
     print(f"Running Test: {test_name}")
     
     try:
-        # Combine all input into a single string with newlines
         input_str = '\n'.join(inputs) + '\n'
 
-        # Launch the game and send all input at once
         process = subprocess.Popen(
             ['./game'],
             stdin=subprocess.PIPE,
@@ -16,16 +14,13 @@ def run_test(test_name, inputs, expected_outputs):
             text=True
         )
 
-        # Send all input, wait up to 10 seconds
         output, _ = process.communicate(input=input_str, timeout=10)
 
-        # Save output to log
         with open('test_log/scenario_test_log.txt', 'a', encoding='utf-8') as f:
             f.write(f"\n=== {test_name} ===\n")
             f.write(output)
             f.write("\n----------------------\n")
 
-        # Check expected outputs
         passed = all(expected.lower() in output.lower() for expected in expected_outputs)
 
         if passed:
@@ -45,31 +40,28 @@ def run_test(test_name, inputs, expected_outputs):
         print(f"Error in test '{test_name}': {e}")
         print("-" * 60)
 
-# === SCENARIO TEST ===
+# === SCENARIO  ===
 
-def full_gameplay_scenario():
+def full_gameplay_scenario_fuel_win():
     run_test(
-        test_name="Full Gameplay Scenario (Movement, Status, Junk, Collision)",
+        test_name="Scenario 1: Collect Junk, Use Fuel Bonus, Die to Asteroid",
         inputs=[
-            "Tester",
-            "W", "W", "D", "D",
-            "H",
-            "D", "D", "D", "D",
-            "F",
-            "D", "D", "D", "D"
+            "Tester", "2",                 # Name + Medium Difficulty
+            "W", "W", "D", "D",            # Move
+            "H",                           # Status check
+            "D", "D", "D", "D",            # Move to junk
+            "F",                           # Fuel bonus
+            "D", "D", "D", "D"             # Asteroid collision
         ],
         expected_outputs=[
             "WELCOME TO SPACEXPLORER",
-            "Ship Status",
-            "Fuel:",
-            "Score:",
-            "Health:",
+            "You chose MEDIUM mode",
+            "Ship Status", "Fuel:", "Score:", "Health:",
             "You collected space junk!",
             "You gained +5 fuel!",
-            "Game Over",
-            "collided with the asteroid"
+            "Game Over", "collided with the asteroid"
         ]
     )
 
 if __name__ == "__main__":
-    full_gameplay_scenario()
+    full_gameplay_scenario_fuel_win()
