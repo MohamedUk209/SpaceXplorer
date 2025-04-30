@@ -37,9 +37,9 @@
 ---
 
 ## How to Compile
-
+```bash
 gcc -o game main.c map.c game.c fileio.c
-
+```
 
 ---
 
@@ -47,5 +47,5 @@ gcc -o game main.c map.c game.c fileio.c
 
 ```bash
 ./game
-
+```
 
