@@ -1,7 +1,7 @@
 # SpaceXplorer
 
 **Version:** 1.0 
-**Author:** Mohamed  
+**Author:** Mohammed almearaj  
 **Language:** C ( Python for testing)
 
 ## Overview
